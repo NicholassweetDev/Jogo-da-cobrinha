@@ -34,3 +34,8 @@ ENV/
 # OS
 .DS_Store
 Thumbs.db 
+# Ambiente do projeto
+.venv/
+
+# Build web (pygbag)
+build/

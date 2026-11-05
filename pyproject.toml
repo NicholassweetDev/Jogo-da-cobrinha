@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jogo-da-cobrinha"
+version = "2.0.0"
+description = "Jogo da Cobrinha em Python com pygame-ce"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+dependencies = ["pygame-ce>=2.5"]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.scripts]
+cobrinha = "cobrinha.app:executar"
+
+[tool.setuptools.packages.find]
+include = ["cobrinha*"]
+
+[tool.setuptools.package-data]
+cobrinha = ["assets/fontes/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

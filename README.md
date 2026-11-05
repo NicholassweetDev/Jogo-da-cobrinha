@@ -1,68 +1,105 @@
-# Jogo da Cobra (Snake Game)
+# Jogo da Cobrinha
 
-Um jogo clássico da cobra implementado em Python usando Pygame. Este é um projeto simples mas divertido que demonstra conceitos básicos de programação de jogos.
+Snake em Python com visual neon, animações suaves e música própria. Todos os gráficos e sons são gerados por código: o repositório não tem nenhuma imagem de sprite nem arquivo de áudio.
 
-## Características
+![Jogando](docs/jogando.gif)
 
-- Controle da cobra usando as setas do teclado
-- Sistema de pontuação
-- Detecção de colisão com paredes e próprio corpo
-- Tela de Game Over com opção de reiniciar
-- Interface simples e intuitiva
+## Como rodar
 
-## Requisitos
+Precisa de Python 3.10 ou mais novo.
 
-- Python 3.x
-- Pygame 2.5.2 ou superior
+```bash
+git clone https://github.com/NicholassweetDev/Jogo-da-cobrinha.git
+cd Jogo-da-cobrinha
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python main.py
+```
 
-## Como Jogar
+## Controles
 
-1. Clone este repositório:
-   ```
-   git clone https://github.com/seu-usuario/snake-game.git
-   ```
+| Tecla | Ação |
+| --- | --- |
+| Setas ou WASD | Mover a cobra e navegar nos menus |
+| Enter ou Espaço | Confirmar |
+| P ou Esc | Pausar |
+| R | Recomeçar, na pausa ou no fim da partida |
+| M | Ligar ou desligar o som |
+| F11 | Tela cheia |
+| F3 | Mostrar os FPS |
 
-2. Entre na pasta do projeto:
-   ```
-   cd snake-game
-   ```
+O menu também funciona com o mouse. No gamepad, use o direcional ou o analógico para mover, A para confirmar, B para voltar e Start para pausar. O jogo pausa sozinho quando a janela perde o foco.
 
-3. Instale as dependências:
-   ```
-   pip install -r requirements.txt
-   ```
+## Modos
 
-4. Execute o jogo:
-   ```
-   python snake_game.py
-   ```
+| Modo | Regra |
+| --- | --- |
+| Clássico | Bater na parede ou no corpo encerra a partida. |
+| Sem paredes | Saia por um lado da arena e volte pelo outro. |
+| Obstáculos | Novos muros surgem a cada nível, sem nunca dividir a arena. |
+| Contra o tempo | Você começa com 60 segundos, e comer rende segundos extras. |
 
-### Controles
-- ↑ (seta para cima): move para cima
-- ↓ (seta para baixo): move para baixo
-- ← (seta para esquerda): move para a esquerda
-- → (seta para direita): move para a direita
-- ESPAÇO: reinicia o jogo após Game Over
+Cada modo tem 4 dificuldades: Fácil, Normal, Difícil e Insano. A velocidade sobe a cada 5 comidas, e a arena muda de cor a cada nível.
 
-### Objetivo
-- Coma a comida (quadrado vermelho) para crescer e aumentar sua pontuação
-- Evite colidir com as paredes ou com o próprio corpo da cobra
-- O jogo termina se você colidir com as paredes ou com seu próprio corpo
+## Comidas
 
-## Como Contribuir
+| Comida | Efeito |
+| --- | --- |
+| Maçã | 10 pontos, cresce 1 |
+| Maçã dourada | 50 pontos, cresce 3 |
+| Raio | Mais veloz por 6 segundos |
+| Ampulheta | Câmera lenta por 6 segundos |
+| Fantasma | Atravessa o próprio corpo por 7 segundos |
+| Encolher | Perde 3 pedaços |
+| Dobro | Pontos em dobro por 10 segundos |
 
-1. Faça um Fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
+As comidas especiais somem em 7 segundos e piscam antes disso. Comer rápido sobe o combo até x8, e o combo multiplica os pontos. O prazo do combo depende da distância até a comida, então vale ir direto em vez de torcer para ela nascer perto.
+
+## O que tem no jogo
+
+- Corpo contínuo com curvas suaves e movimento interpolado entre as células, em vez de saltos de quadrado em quadrado.
+- Cobra com olhos que seguem a comida, língua, piscadas, boca que abre perto da comida e ondulação ao engolir.
+- Partículas, ondas de choque, tremor de tela, pontos flutuantes e morte em câmera congelada, com o corpo explodindo pedaço por pedaço.
+- 5 aparências para a cobra.
+- Música em loop e 28 efeitos sonoros sintetizados na hora. A mordida fica mais aguda conforme o combo sobe.
+- Fila de viradas, para duas teclas rápidas não se perderem.
+- Tabela dos 5 melhores por modo e dificuldade, salva em `~/.config/cobrinha/dados.json`.
+- Opções para desligar o tremor e os clarões da tela.
+
+| | |
+| --- | --- |
+| ![Menu](docs/menu.png) | ![Como jogar](docs/como-jogar.png) |
+| ![Obstáculos](docs/obstaculos.png) | ![Fim de jogo](docs/fim-de-jogo.png) |
+
+## Desenvolvimento
+
+```bash
+pip install -r requirements-dev.txt
+python -m pytest
+```
+
+Os testes rodam sem janela nem som e jogam partidas inteiras com um piloto automático. Para gerar capturas de todas as telas:
+
+```bash
+python ferramentas/capturar.py capturas
+```
+
+A lógica do jogo fica em `cobrinha/nucleo` e não importa pygame. Ela avança em ticks fixos e emite eventos, aos quais o desenho e o som reagem.
+
+```text
+cobrinha/
+  nucleo/    regras, cobra, comidas, obstáculos e piloto automático
+  render/    tema, cobra, cenário, efeitos e barra de pontos
+  cenas/     menu e partida
+  audio/     síntese de som e reprodução
+  app.py     janela, laço principal e transições
+```
+
+## Créditos
+
+Fontes [Audiowide](https://fonts.google.com/specimen/Audiowide) e [Chakra Petch](https://fonts.google.com/specimen/Chakra+Petch), sob a licença SIL Open Font License. As licenças estão em `cobrinha/assets/fontes`.
 
 ## Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-
-## Contato
-
-Seu Nome - [@seu_twitter](https://twitter.com/seu_twitter) - email@exemplo.com
-
-Link do Projeto: [https://github.com/seu-usuario/snake-game](https://github.com/seu-usuario/snake-game) 
+MIT. Veja o arquivo [LICENSE](LICENSE).
